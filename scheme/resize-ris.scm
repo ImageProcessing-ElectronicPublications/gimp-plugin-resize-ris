@@ -22,7 +22,7 @@
 ; SOFTLIGHT-MODE 19
 ; GRAIN-EXTRACT-MODE 20
 ; GRAIN-MERGE-MODE 21
-; COLOR-ERASE-MODE 12
+; COLOR-ERASE-MODE 22
 
 (define (resize-ris image 
                     drawable
@@ -45,6 +45,8 @@
     
         (gimp-context-set-interpolation method)
 
+        (set! layer-copy (car (gimp-layer-new-from-visible image image "visible")))
+        (set! layer-defect (car (gimp-layer-copy layer-copy TRUE)))
         (gimp-image-insert-layer image layer-copy 0 -1)
         (gimp-image-insert-layer image layer-defect 0 -1)
         (gimp-layer-scale layer-defect newwidth newheight TRUE)
@@ -79,7 +81,7 @@
                     "Resize used RIS (Reverse Interpolate Scale)"
                     "zvezdochiot https://github.com/zvezdochiot"
                     "This is free and unencumbered software released into the public domain."
-                    "2025-02-06"
+                    "2025-02-07"
                     "*"
                     SF-IMAGE       "Image"       0
                     SF-DRAWABLE    "Drawable"    0
