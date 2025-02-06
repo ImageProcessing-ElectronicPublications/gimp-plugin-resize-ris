@@ -1,7 +1,8 @@
 (define (resize-ris image 
                     drawable
                     newwidth
-                    newheight)
+                    newheight
+                    method)
     (let*
         (
             (drawable  (car (gimp-image-active-drawable image)))
@@ -19,15 +20,36 @@
         (gimp-layer-set-mode new-layer-2 LAYER-MODE-MULTIPLY-LEGACY)
         (set! new-layer-1 (car (gimp-image-merge-down image new-layer-2 EXPAND-AS-NECESSARY)))
 
+        (cond
+            ((= method 0)
+                (gimp-context-set-interpolation INTERPOLATION-CUBIC)
+            )
+            ((= method 1)
+                (gimp-context-set-interpolation INTERPOLATION-NONE)
+            )
+            ((= method 2)
+                (gimp-context-set-interpolation INTERPOLATION-LINEAR)
+            )
+            ((= method 3)
+                (gimp-context-set-interpolation INTERPOLATION-CUBIC)
+            )
+            ((= method 4)
+                (gimp-context-set-interpolation INTERPOLATION-NOHALO)
+            )
+            ((= method 5)
+                (gimp-context-set-interpolation INTERPOLATION-LOHALO)
+            )
+        )
+
         (gimp-image-insert-layer image new-layer-3 0 -1)
-        (gimp-layer-scale new-layer-3 newwidth newheight INTERPOLATION-CUBIC)
-        (gimp-layer-scale new-layer-3 oldwidth oldheight INTERPOLATION-CUBIC)
+        (gimp-layer-scale new-layer-3 newwidth newheight TRUE)
+        (gimp-layer-scale new-layer-3 oldwidth oldheight TRUE)
 
         (gimp-layer-set-mode new-layer-3 LAYER-MODE-DIVIDE-LEGACY)
         (set! new-layer-1 (car (gimp-image-merge-down image new-layer-3 EXPAND-AS-NECESSARY)))
         (gimp-item-set-name new-layer-1 "RIS")
 
-        (gimp-image-scale-full image newwidth newheight INTERPOLATION-CUBIC)
+        (gimp-image-scale image newwidth newheight)
 
         (gimp-displays-flush)
         
@@ -46,6 +68,7 @@
                     SF-DRAWABLE    "Drawable"    0
                     SF-VALUE       "Width"       "1024"
                     SF-VALUE       "Height"      "1024"
+                    SF-OPTION      "Method"      '("Cubic" "None" "Linear" "Cubic" "NoHalo" "LowHalo")
 )
 
 (script-fu-menu-register "resize-ris" "<Image>/Image/Transform")
