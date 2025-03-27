@@ -1,5 +1,5 @@
 ;
-; (gimp-layer-set-mode layer-copy SCREEN-MODE)
+; (gimp-layer-set-mode layer-base SCREEN-MODE)
 ; NORMAL-MODE 0
 ; DISSOLVE-MODE 1
 ; BEHIND-MODE 2
@@ -34,39 +34,29 @@
             (drawable  (car (gimp-image-active-drawable image)))
             (oldwidth  (car (gimp-image-width image)))
             (oldheight (car (gimp-image-height image)))
-            (layer-copy (car (gimp-layer-copy drawable TRUE)))
+            (layer-base (car (gimp-layer-copy drawable TRUE)))
             (layer-defect (car (gimp-layer-copy drawable TRUE)))
-            (new-layer-1 (car (gimp-layer-copy drawable TRUE)))
-            (new-layer-2 (car (gimp-layer-copy drawable TRUE)))
-            (new-layer-3 (car (gimp-layer-copy drawable TRUE)))
+            (layer-copy (car (gimp-layer-copy drawable TRUE)))
         )
     
         (gimp-image-undo-group-start image)
     
         (gimp-context-set-interpolation method)
 
-        (set! layer-copy (car (gimp-layer-new-from-visible image image "visible")))
-        (set! layer-defect (car (gimp-layer-copy layer-copy TRUE)))
-        (gimp-image-insert-layer image layer-copy 0 -1)
+        (set! layer-base (car (gimp-layer-new-from-visible image image "visible")))
+        (set! layer-defect (car (gimp-layer-copy layer-base TRUE)))
+        (gimp-image-insert-layer image layer-base 0 -1)
         (gimp-image-insert-layer image layer-defect 0 -1)
         (gimp-layer-scale layer-defect newwidth newheight TRUE)
         (gimp-layer-scale layer-defect oldwidth oldheight TRUE)
 
-        (set! new-layer-1 (car (gimp-layer-copy layer-copy TRUE)))
-        (set! new-layer-2 (car (gimp-layer-copy layer-copy TRUE)))
-        (set! new-layer-3 (car (gimp-layer-copy layer-defect TRUE)))
-        (gimp-image-insert-layer image new-layer-1 0 -1)
-        (gimp-image-insert-layer image new-layer-2 0 -1)
-        (gimp-image-insert-layer image new-layer-3 0 -1)
-        (gimp-layer-set-mode new-layer-1 SUBTRACT-MODE)
-        (set! layer-defect (car (gimp-image-merge-down image new-layer-1 EXPAND-AS-NECESSARY)))
-        (gimp-layer-set-mode new-layer-3 SUBTRACT-MODE)
-        (set! new-layer-2 (car (gimp-image-merge-down image new-layer-3 EXPAND-AS-NECESSARY)))
-        (gimp-layer-set-mode layer-defect SUBTRACT-MODE)
-        (set! layer-copy (car (gimp-image-merge-down image layer-defect EXPAND-AS-NECESSARY)))
-        (gimp-layer-set-mode new-layer-2 ADDITION-MODE)
-        (set! layer-copy (car (gimp-image-merge-down image new-layer-2 EXPAND-AS-NECESSARY)))
-        (gimp-item-set-name layer-copy "RIS")
+        (set! layer-copy (car (gimp-layer-copy layer-base TRUE)))
+        (gimp-image-insert-layer image layer-copy 0 -1)
+        (gimp-layer-set-mode layer-copy GRAIN-EXTRACT-MODE)
+        (set! layer-defect (car (gimp-image-merge-down image layer-copy EXPAND-AS-NECESSARY)))
+        (gimp-layer-set-mode layer-defect GRAIN-EXTRACT-MODE)
+        (set! layer-base (car (gimp-image-merge-down image layer-defect EXPAND-AS-NECESSARY)))
+        (gimp-item-set-name layer-base "RIS")
 
         (gimp-image-scale image newwidth newheight)
 
@@ -81,7 +71,7 @@
                     "Resize used RIS (Reverse Interpolate Scale)"
                     "zvezdochiot https://github.com/zvezdochiot"
                     "This is free and unencumbered software released into the public domain."
-                    "2025-02-07"
+                    "2025-03-27"
                     "*"
                     SF-IMAGE       "Image"       0
                     SF-DRAWABLE    "Drawable"    0
