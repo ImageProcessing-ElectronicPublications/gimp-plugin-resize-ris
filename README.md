@@ -8,6 +8,8 @@ to the original image by simple averaging.
 
 ![RIS resize](images/ris-resize-dialog.png)
 
+![RIS resize](images/ris-resize-dialog-scheme.png)
+
 Hints:
  * The plugin is located in : Menu -> Image -> Transform -> Resize RIS
  * Currently it all colormode images
@@ -25,8 +27,12 @@ RIS resize (cubic):
 ## Install:
 
 Copy `resize-ris.py` in:
-* Linux: `~/.gimp-2.8/plug-ins`
-* Windows: `C:\Program Files\GIMP 2\lib\gimp\2.0\plug-ins`
+* Linux: `~/.config/GIMP/2.10/plug-ins`
+* Windows: `C:\Program Files\GIMP 2\lib\gimp\3.0\plug-ins`
+
+or `resize-ris.scm` in:
+* Linux: `~/.config/GIMP/2.10/scripts`
+* Windows: `C:\Program Files\GIMP 2\lib\gimp\3.0\scripts`
 
 ----
 
